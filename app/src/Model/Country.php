@@ -17,11 +17,11 @@ class Country {
         $this->fullName = (string) ($data['fullName'] ?? '');
         $this->isoAlpha2 = (string) ($data['isoAlpha2'] ?? '');
         $this->isoAlpha3 = (string) ($data['isoAlpha3'] ?? '');
-        $this->isoNumeric = (string) ($data['isoNumeric'] ?? '');  // Код как строка (e.g., '380')
+        $this->isoNumeric = (string) ($data['isoNumeric'] ?? '');  
         
         // Приведение для числовых полей
-        $this->population = (int) ($data['population'] ?? 0);  // Население как int
-        $this->square = (int) ($data['square'] ?? 0);          // Площадь как int (если нужно float — скажите)
+        $this->population = (int) ($data['population'] ?? 0);  
+        $this->square = (int) ($data['square'] ?? 0);          
     }
 
     // Геттеры
