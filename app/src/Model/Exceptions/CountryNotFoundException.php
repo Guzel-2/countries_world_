@@ -12,7 +12,7 @@ class CountryNotFoundException extends Exception
         $exceptionMessage = "Страна с кодом '{$notFoundCode}' не найдена.";
         parent::__construct(
             message: $exceptionMessage,
-            code: ErrorCodes::COUNTRY_NOT_FOUND_ERROR,  // 2 (внутренний код)
+            code: ErrorCodes::COUNTRY_NOT_FOUND_ERROR, 
             previous: $previous,
         );
     }
