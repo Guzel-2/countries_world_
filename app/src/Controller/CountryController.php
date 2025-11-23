@@ -113,7 +113,7 @@ final class CountryController extends AbstractController
             $data['isoAlpha2'] = strtoupper($data['isoAlpha2']);
             $data['isoAlpha3'] = strtoupper($data['isoAlpha3']);
 
-            // Строгая валидация данных с накоплением ошибок (вместо одной throw)
+     
             $validationErrors = [];
             if (strlen($data['isoAlpha2']) !== 2 || !ctype_alpha($data['isoAlpha2'])) {
                 $validationErrors[] = ['field' => 'isoAlpha2', 'message' => 'Должно быть ровно 2 заглавными буквами'];
@@ -174,7 +174,7 @@ final class CountryController extends AbstractController
     public function edit(Request $request, string $code): JsonResponse
     {
         try {
-            // Проверка валидности кода (предполагаем ISO Alpha2, 2 символа)
+            // Проверка валидности кода 
             if (empty($code) || strlen($code) !== 2) {
                 throw new InvalidCodeException('Недопустимый формат кода: должен быть 2 символа (ISO Alpha2)');
             }
@@ -182,13 +182,13 @@ final class CountryController extends AbstractController
             // Получить текущие данные страны
             $existingCountry = $this->countries->get($code);
 
-            // Ручной парсинг JSON
+        
             $data = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
                 throw new InvalidCountryException('Недопустимые JSON-данные');
             }
 
-            // Маппинг полей с fallback на существующие данные (поля опциональны для PATCH)
+        
             $shortName = $data['shortName'] ?? $existingCountry->getShortName();
             $fullName = $data['fullName'] ?? $existingCountry->getFullName();
             $isoAlpha2 = isset($data['isoAlpha2']) ? strtoupper($data['isoAlpha2']) : $existingCountry->getIsoAlpha2();
@@ -197,7 +197,7 @@ final class CountryController extends AbstractController
             $population = isset($data['population']) ? (int) $data['population'] : $existingCountry->getPopulation();
             $square = isset($data['square']) ? (int) $data['square'] : $existingCountry->getSquare();
 
-            // Строгая валидация обновленных данных с накоплением ошибок (только для полей, которые обновляются)
+            // Строгая валидация обновленных данных с накоплением ошибок 
             $validationErrors = [];
             if (isset($data['isoAlpha2']) && (strlen($isoAlpha2) !== 2 || !ctype_alpha($isoAlpha2))) {
                 $validationErrors[] = ['field' => 'isoAlpha2', 'message' => 'Должно быть ровно 2 заглавными буквами'];
@@ -236,10 +236,10 @@ final class CountryController extends AbstractController
             ];
             $updatedCountry = new Country($updatedData);
 
-            // Обновление через CountryScenarios
+
             $this->countries->edit($code, $updatedCountry);
 
-            // Возврат preview обновленной страны
+      
             $countryPreview = $this->buildCountryPreview(country: $updatedCountry, request: $request);
             return $this->json(data: $countryPreview, status: 200);
 
@@ -275,13 +275,13 @@ final class CountryController extends AbstractController
     public function remove(string $code): JsonResponse
     {
         try {
-            // Проверка валидности кода (аналогично edit и get)
+            // Проверка валидности кода 
             if (empty($code) || strlen($code) !== 2) {
                 throw new InvalidCodeException('Недопустимый формат кода: должен быть 2 символа (ISO Alpha2)');
             }
 
             $this->countries->delete($code);
-            return $this->json(data: null, status: 204);  // 204 No Content
+            return $this->json(data: null, status: 204); 
         } catch (InvalidCodeException $ex) {
             $response = $this->buildErrorResponse(ex: $ex);
             $response->setStatusCode(code: 400);
@@ -305,7 +305,7 @@ final class CountryController extends AbstractController
         }
     }
 
-    // вспомогательный метод формирования ошибки
+   
     private function buildErrorResponse(Exception $ex): JsonResponse
     {
         $data = [
@@ -313,7 +313,6 @@ final class CountryController extends AbstractController
             'errorMessage' => $ex->getMessage(),
         ];
 
-        // Поддержка детальных ошибок для InvalidCountryException
         if ($ex instanceof InvalidCountryException && !empty($ex->getErrors())) {
             $data['errors'] = $ex->getErrors();  // [{'field': 'isoAlpha2', 'message': '...'}]
         }
@@ -321,7 +320,7 @@ final class CountryController extends AbstractController
         return $this->json(data: $data);
     }
 
-    // вспомогательный метод получения объекта CountryPreview
+
     private function buildCountryPreview(Country $country, Request $request): array
     {
         $uri = sprintf(
