@@ -57,7 +57,7 @@ final class CountryController extends AbstractController
     {
         try {
             $country = $this->countries->get($code);
-            // Ручная конвертация объекта Country в массив для JSON-сериализации
+         
             $data = [
                 'shortName' => $country->getShortName(),
                 'fullName' => $country->getFullName(),
@@ -96,12 +96,12 @@ final class CountryController extends AbstractController
     public function add(Request $request): JsonResponse
     {
         try {
-            // Ручной парсинг JSON
+       
             $data = json_decode($request->getContent(), true);
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
                 throw new InvalidCountryException('Недопустимые JSON-данные');
             }
-            // Проверка обязательных полей
+        
             $requiredFields = ['shortName', 'fullName', 'isoAlpha2', 'isoAlpha3', 'isoNumeric', 'population', 'square'];
             foreach ($requiredFields as $field) {
                 if (!isset($data[$field]) || $data[$field] === null) {
@@ -109,7 +109,6 @@ final class CountryController extends AbstractController
                 }
             }
 
-            // Приведение к верхнему регистру для кодов
             $data['isoAlpha2'] = strtoupper($data['isoAlpha2']);
             $data['isoAlpha3'] = strtoupper($data['isoAlpha3']);
 
@@ -141,7 +140,7 @@ final class CountryController extends AbstractController
                 throw new InvalidCountryException('Недопустимые данные для добавления страны', $validationErrors);
             }
 
-            // Создание объекта Country с валидированным массивом $data
+         
             $country = new Country($data);
             $this->countries->store($country);
             $countryPreview = $this->buildCountryPreview(country: $country, request: $request);
@@ -224,7 +223,7 @@ final class CountryController extends AbstractController
                 throw new InvalidCountryException('Недопустимые данные для редактирования страны', $validationErrors);
             }
 
-            // Создание обновленного объекта Country с merged данными
+            // Создание обновленного объекта Country
             $updatedData = [
                 'shortName' => $shortName,
                 'fullName' => $fullName,
